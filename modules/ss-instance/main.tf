@@ -7,8 +7,13 @@ variable "ss_password" {
   type = string
 }
 
+
 provider "template" {
   version = "~> 2.1"
+}
+
+provider "google" {
+  alias = "gcp"
 }
 
 data "google_compute_image" "ubuntu" {
@@ -29,7 +34,7 @@ data "template_file" "init" {
 resource "google_compute_instance" "ss-server" {
   name         = "ss-server"
   machine_type = "e2-standard-2"
-
+  provider = google.gcp
   boot_disk {
     initialize_params {
       image = data.google_compute_image.ubuntu.name
