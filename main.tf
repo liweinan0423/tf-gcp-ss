@@ -23,6 +23,7 @@ provider "google" {
 module "ss-instance" {
   source = "./modules/ss-instance"
   ss_password = var.ss_password
+  instance_alias = "hk"
   providers = {
     google.gcp = google.hk
   }
@@ -30,6 +31,7 @@ module "ss-instance" {
 module "ss-instance-2" {
   source = "./modules/ss-instance"
   ss_password = var.ss_password
+  instance_alias = "tw"
   providers = {
     google.gcp = google.tw
   }

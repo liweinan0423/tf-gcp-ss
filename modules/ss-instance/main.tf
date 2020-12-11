@@ -7,6 +7,10 @@ variable "ss_password" {
   type = string
 }
 
+variable "instance_alias" {
+  type = string
+}
+
 
 provider "template" {
   version = "~> 2.1"
@@ -32,7 +36,7 @@ data "template_file" "init" {
 }
 
 resource "google_compute_instance" "ss-server" {
-  name         = "ss-server"
+  name         = "ss-server-${var.instance_alias}"
   machine_type = "e2-standard-2"
   provider = google.gcp
   boot_disk {
