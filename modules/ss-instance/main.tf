@@ -59,7 +59,8 @@ resource "google_compute_instance" "ss-server" {
 }
 
 resource "google_compute_address" "static_ip" {
-  name = "ss-static-ip"
+  name = "ss-static-ip-${var.instance_alias}"
+  provider = google.gcp
 }
 
 output "ip_address" {
