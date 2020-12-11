@@ -6,6 +6,11 @@ variable "ss_password" {
   type = string
 }
 
+locals {
+  method = "chacha20-ietf-poly1305"
+  port = 443
+}
+
 provider "template" {
   version = "~> 2.1"
 }
@@ -17,13 +22,18 @@ provider "google" {
   version = "~> 3.41"
 }
 
-resource "google_compute_instance" "ssserver" {
+data "google_compute_image" "ubuntu" {
+  family = "ubuntu-2004-lts"
+  project = "ubuntu-os-cloud"
+}
+
+resource "google_compute_instance" "ss-server" {
   name         = "ss-server"
-  machine_type = "f1-micro"
+  machine_type = "e2-standard-2"
 
   boot_disk {
     initialize_params {
-      image = "debian-cloud/debian-9"
+      image = data.google_compute_image.ubuntu.name
     }
   }
 
@@ -35,21 +45,26 @@ resource "google_compute_instance" "ssserver" {
     }
   }
 
+  tags = ["https-server"]
+
   metadata_startup_script = data.template_file.init.rendered
-}
-
-resource "google_compute_firewall" "default" {
-  name    = "ss-firewall"
-  network = "default"
-
-  allow {
-    protocol = "tcp"
-    ports    = ["443", "80"]
-  }
 }
 
 resource "google_compute_address" "static_ip" {
   name = "ss-static-ip"
+}
+
+resource "google_dns_managed_zone" "zone" {
+  name = "ladder"
+  dns_name = "ladder.li-weinan.com."
+}
+
+resource "google_dns_record_set" "dns" {
+  name = "ladder.li-weinan.com."
+  type = "A"
+  ttl = 300
+  managed_zone = "ladder"
+  rrdatas = [google_compute_address.static_ip.address]
 }
 
 data "template_file" "init" {
@@ -57,6 +72,8 @@ data "template_file" "init" {
 
   vars = {
     password = var.ss_password
+    method = local.method
+    port = local.port
   }
 }
 
@@ -69,5 +86,5 @@ output "ss_server_port" {
 }
 
 output "ss_encrypt_method" {
-  value = "aes-256-cfb"
+  value = local.method
 }
