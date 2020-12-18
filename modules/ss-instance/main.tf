@@ -37,7 +37,7 @@ data "template_file" "init" {
 
 resource "google_compute_instance" "ss-server" {
   name         = "ss-server-${var.instance_alias}"
-  machine_type = "e2-medium"
+  machine_type = "e2-standard-2"
   provider = google.gcp
   allow_stopping_for_update = true
   boot_disk {
