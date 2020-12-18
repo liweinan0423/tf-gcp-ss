@@ -36,27 +36,8 @@ module "ss-instance-2" {
   }
 }
 
-resource "google_dns_managed_zone" "zone" {
+data "google_dns_managed_zone" "zone" {
   name = "ladder"
-  dns_name = "ladder.li-weinan.com."
-  dnssec_config {
-    kind          = "dns#managedZoneDnsSecConfig" 
-    non_existence = "nsec3"
-    state         = "on" 
-
-    default_key_specs {
-      algorithm  = "rsasha256" 
-      key_length = 2048
-      key_type   = "keySigning"
-      kind       = "dns#dnsKeySpec" 
-    }
-    default_key_specs {
-      algorithm  = "rsasha256"
-      key_length = 1024 
-      key_type   = "zoneSigning" 
-      kind       = "dns#dnsKeySpec"
-    }
-  }
 }
 
 resource "google_dns_record_set" "dns" {
