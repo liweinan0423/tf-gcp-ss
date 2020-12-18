@@ -37,8 +37,9 @@ data "template_file" "init" {
 
 resource "google_compute_instance" "ss-server" {
   name         = "ss-server-${var.instance_alias}"
-  machine_type = "e2-standard-2"
+  machine_type = "e2-medium"
   provider = google.gcp
+  allow_stopping_for_update = true
   boot_disk {
     initialize_params {
       image = data.google_compute_image.ubuntu.name
@@ -57,6 +58,8 @@ resource "google_compute_instance" "ss-server" {
 
   metadata_startup_script = data.template_file.init.rendered
 }
+
+
 
 resource "google_compute_address" "static_ip" {
   name = "ss-static-ip-${var.instance_alias}"

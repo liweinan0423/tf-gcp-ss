@@ -18,7 +18,6 @@ provider "google" {
   version = "~> 3.41"
   alias = "tw"
 }
-
 module "ss-instance" {
   source = "./modules/ss-instance"
   ss_password = var.ss_password
@@ -53,5 +52,5 @@ resource "google_dns_record_set" "dns-tw" {
   type = "A"
   ttl = 300
   managed_zone = "ladder"
-  rrdatas = [module.ss-instance.ip_address]
+  rrdatas = [module.ss-instance-2.ip_address]
 }
