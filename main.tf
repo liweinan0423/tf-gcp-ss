@@ -1,3 +1,13 @@
+terraform {
+  backend "remote" {
+    hostname = "app.terraform.io"
+    organization = "william"
+
+    workspaces {
+      name = "tf-gcp-ss"
+    }
+  }
+}
 variable "project_id" {
   type = string
 }
