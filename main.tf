@@ -16,19 +16,19 @@ provider "google" {
   region  = "asia-east1"
   zone    = "asia-east1-a"
   version = "~> 3.41"
-  alias = "tw"
+  alias   = "tw"
 }
 module "ss-instance" {
-  source = "./modules/ss-instance"
-  ss_password = var.ss_password
+  source         = "./modules/ss-instance"
+  ss_password    = var.ss_password
   instance_alias = "hk"
   providers = {
     google.gcp = google
   }
 }
 module "ss-instance-2" {
-  source = "./modules/ss-instance"
-  ss_password = var.ss_password
+  source         = "./modules/ss-instance"
+  ss_password    = var.ss_password
   instance_alias = "tw"
   providers = {
     google.gcp = google.tw
@@ -40,17 +40,17 @@ data "google_dns_managed_zone" "zone" {
 }
 
 resource "google_dns_record_set" "dns" {
-  name = "ladder.li-weinan.com."
-  type = "A"
-  ttl = 300
+  name         = "ladder.li-weinan.com."
+  type         = "A"
+  ttl          = 300
   managed_zone = "ladder"
-  rrdatas = [module.ss-instance.ip_address]
+  rrdatas      = [module.ss-instance.ip_address]
 }
 
 resource "google_dns_record_set" "dns-tw" {
-  name = "tw.ladder.li-weinan.com."
-  type = "A"
-  ttl = 300
+  name         = "tw.ladder.li-weinan.com."
+  type         = "A"
+  ttl          = 300
   managed_zone = "ladder"
-  rrdatas = [module.ss-instance-2.ip_address]
+  rrdatas      = [module.ss-instance-2.ip_address]
 }
